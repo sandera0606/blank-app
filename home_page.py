@@ -4,16 +4,21 @@ from scripts import db_manager as db
 import string
 
 title = "Grocery Running 🏃‍♂️"
+
 st.set_page_config(
         page_title=title,
 )
 
 st.title(title)
 
-st.text_input("Your Location:", key = "location")
+tab1, tab2 = st.tabs(["Enter Info", "Final List"])
+
+tab1.write("Enter your shopping list in the sidebar to get started!")
+
+tab1.text_input("Your Location:", key = "location")
 
 
-selected_locs = st.multiselect(
+selected_locs = tab1.multiselect(
     'Which stores are you willing to visit?',
     db.local_supermarkets
 )
@@ -24,17 +29,9 @@ grocery_list = pd.DataFrame(
     }
 )
 
-if "generate_clicked" not in st.session_state:
-    st.session_state.generate_clicked = False
-
-def generate_options():
-    st.session_state.generate_clicked = True
-
-def degenerate_options():
-    st.session_state.generate_clicked = False
-
 st.sidebar.title("Shopping List 🛒")
 
+# Manage the grocery list on the side
 edited_grocery_list = st.sidebar.data_editor(
     grocery_list,
     column_config={
@@ -47,22 +44,46 @@ edited_grocery_list = st.sidebar.data_editor(
     },
     num_rows = "dynamic",
     hide_index = True,
-    on_change = degenerate_options
 )
 
-st.button(
-    label = "Generate Options", 
-    type = "primary", 
-    help = "Finished selecting stores? Generate options!",
-    on_click = generate_options
-)
+final_list_items = []
 
-if st.session_state.generate_clicked:
+def display_options():
+    id = 0
     for grocery in edited_grocery_list["groceries"]:
         grocery = grocery.strip()
         if grocery and selected_locs:
-            st.header(string.capwords(grocery))
-            grocery_options = db.get_grocery_options(grocery, selected_locs)
-            grocery_options
+            tab1.header(string.capwords(grocery))
+            edited_options = tab1.data_editor(
+                db.get_grocery_options(grocery, selected_locs),
+                key = "candidate-groceries-" + str(id),
+                hide_index = True
+            )
+            for option in edited_options.itertuples():
+                if(option.Finalize):
+                    final_list_items.append(
+                        {
+                            'Item_Name': option.Item_Name,
+                            'Price': option.Price,
+                            'Store': option.Store
+                        }
+                    )
+        id += 1
 
+display_options()
 
+tab1.write("Finished selecting groceries? Head over to the 'final list' tab to view your grocery list!")
+
+tab2.dataframe(
+    final_list_items,
+    column_config={
+        'Item_Name': 'Item Name',
+        'Price': st.column_config.NumberColumn(
+            'Price ($)',
+            format = "%.2f",
+        ),
+        'Store': 'Store',
+    },
+    hide_index = True,
+    width = 1000
+)
