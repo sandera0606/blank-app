@@ -61,7 +61,13 @@ def display_options():
             )
             for option in edited_options.itertuples():
                 if(option.Finalize):
-                    final_list_items.append(option)
+                    final_list_items.append(
+                        {
+                            'Item_Name': option.Item_Name,
+                            'Price': option.Price,
+                            'Store': option.Store
+                        }
+                    )
         id += 1
 
 display_options()
@@ -69,5 +75,15 @@ display_options()
 tab1.write("Finished selecting groceries? Head over to the 'final list' tab to view your grocery list!")
 
 tab2.dataframe(
-    final_list_items
+    final_list_items,
+    column_config={
+        'Item_Name': 'Item Name',
+        'Price': st.column_config.NumberColumn(
+            'Price ($)',
+            format = "%.2f",
+        ),
+        'Store': 'Store',
+    },
+    hide_index = True,
+    width = 1000
 )
