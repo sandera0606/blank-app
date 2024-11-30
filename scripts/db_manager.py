@@ -1,7 +1,7 @@
 import pandas as pd
 
 # replace with location.get_local_supermarkets() or something
-local_supermarkets = ["Walmart", "Sobeys", "Costco", "T&T Supermarket"]
+local_supermarkets = ["Metro", "T&T Supermarket", "Loblaws", "Walmart", "No Frills"]
 
 # For testing:
 # Replace with something webscraping
