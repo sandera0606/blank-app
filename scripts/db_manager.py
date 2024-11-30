@@ -22,6 +22,7 @@ def get_grocery_options(item, selected_locs): # take a string "item" as input la
             for product, price in eggs[store].items():
                 rows.append(
                     {
+                        'Finalize?': False,
                         'Item Name': product,
                         'Price': price,
                         'Store': store

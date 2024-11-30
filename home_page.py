@@ -24,17 +24,9 @@ grocery_list = pd.DataFrame(
     }
 )
 
-if "generate_clicked" not in st.session_state:
-    st.session_state.generate_clicked = False
-
-def generate_options():
-    st.session_state.generate_clicked = True
-
-def degenerate_options():
-    st.session_state.generate_clicked = False
-
 st.sidebar.title("Shopping List 🛒")
 
+# Manage the grocery list on the side
 edited_grocery_list = st.sidebar.data_editor(
     grocery_list,
     column_config={
@@ -47,22 +39,22 @@ edited_grocery_list = st.sidebar.data_editor(
     },
     num_rows = "dynamic",
     hide_index = True,
-    on_change = degenerate_options
 )
 
-st.button(
-    label = "Generate Options", 
-    type = "primary", 
-    help = "Finished selecting stores? Generate options!",
-    on_click = generate_options
-)
+candidate_grocery_options = []
+final_list_items = pd.DataFrame()
 
-if st.session_state.generate_clicked:
+def display_options():
+    id = 0
     for grocery in edited_grocery_list["groceries"]:
         grocery = grocery.strip()
         if grocery and selected_locs:
             st.header(string.capwords(grocery))
-            grocery_options = db.get_grocery_options(grocery, selected_locs)
-            grocery_options
+            edited_options = st.data_editor(
+                db.get_grocery_options(grocery, selected_locs),
+                key = "candidate-groceries-" + str(id),
+                hide_index = True
+            )
+        id += 1
 
-
+display_options()
