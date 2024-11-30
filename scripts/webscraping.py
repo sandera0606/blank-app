@@ -1,5 +1,5 @@
 import requests #allows for https requests 
-from bs4 import beautifulsoup #html parsing 
+from bs4 import BeautifulSoup #html parsing 
 import re 
 
 store_names = [] #will be the store name like costco, metro, t&t, etc
@@ -19,26 +19,59 @@ product = "" #insert the same of the products
 #metro: (f"https://www.metro.ca/en/online-grocery/search?filter={product}")
 
 #walmart: (f"https://www.walmart.ca/en/search?q={product}")
+#product name: <span data-automation-id="product-title" class="normal dark-gray mb0 mt1 lh-title f6 f5-l lh-copy">Great Value Large Eggs, 12 Count</span>
+#price: <span class="w_q67L">current price $3.93</span>
+#<span class="w_q67L">Great Value Large Eggs, 12 Count<!-- --> </span> 
+
+
+#<span class="w_q67L">Great Value XL White Eggs, 12 Count<!-- --> </span>
+#<span class="w_q67L">current price $4.63</span>
+#<span class="w_vi_D" style="-webkit-line-clamp: 3; padding-bottom: 0em; margin-bottom: 0em;"><span data-automation-id="product-title" class="normal dark-gray mb0 mt1 lh-title f6 f5-l lh-copy">Great Value XL White Eggs, 12 Count</span></span>
 
 #loblaws: (f"https://www.loblaws.ca/search?search-bar={product}")
 
 #nofrills: (f"https://www.nofrills.ca/search?search-bar={product}")
 
 
-url_dict = {
-    "Walmart": "https://www.walmart.ca/en/search?q="+product,
-    "Metro": "https://www.metro.ca/en/online-grocery/search?filter="+product,
-    "Loblaws": "https://www.loblaws.ca/search?search-bar="+product,
-    "No Frills": "https://www.nofrills.ca/search?search-bar="+product,
-    "T&T Supermarket": "https://www.tntsupermarket.com/eng/search.html?query="+product
-}
+
 
 stores = ["Walmart", "Metro", "Loblaws", "No Frills", "T&T Supermarket"]
 
-def parse_data(stores, product, url):
-    for store in stores: 
-        if store == url.dict.values():
-            pass 
+def get_url(store, product):
+    url_dict = {
+        "Walmart": "https://www.walmart.ca/en/search?q="+product,
+        "Metro": "https://www.metro.ca/en/online-grocery/search?filter="+product,
+        "Loblaws": "https://www.loblaws.ca/search?search-bar="+product,
+        "No Frills": "https://www.nofrills.ca/search?search-bar="+product,
+        "T&T Supermarket": "https://www.tntsupermarket.com/eng/search.html?query="+product
+    }
+    return url_dict[store]
 
-def get_
-for store, url in url_dict.items():
+
+def parse_data(store, product):
+    related_items = {}
+    # Example:
+    # {"Whole Wheat Bread": [price], "Whole Grain Bread: [price]"}
+    request = requests.get(get_url(store, product))
+    soup = BeautifulSoup(request.text,"html.parser")
+    print(get_url(store,product))
+
+    #if store == "Walmart":
+        
+    #elif store == "Metro":
+    #elif store == "Loblaws":
+    # elif store == "No Frills":
+    # elif store == "T&T Supermarket":
+    # else:
+    #     raise TypeError("Invalid store")
+
+    # return related_items
+
+
+def get_groceries_by_store(product, selected_locs):
+    grocery_data = {}
+    for store in selected_locs:
+        grocery_data[store] = parse_data(store, product)
+    return grocery_data
+
+parse_data("Loblaws", "Eggs")
