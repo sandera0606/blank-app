@@ -1,16 +1,20 @@
 import streamlit as st
 import pandas as pd
-import visual_manager
+from scripts import db_manager as db
 
-st.title("Grocery Running 🏃‍♂️")
+title = "Grocery Running 🏃‍♂️"
+st.set_page_config(
+        page_title=title,
+)
+
+st.title(title)
 
 st.text_input("Your Location:", key = "location")
 
-supermarkets = ["Walmart", "Sobeys", "Costco", "T&T Supermarket"]
 
 selected_locs = st.multiselect(
     'Which stores are you willing to visit?',
-    supermarkets
+    db.local_supermarkets
 )
 
 grocery_list = pd.DataFrame(
