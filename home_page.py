@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from scripts import db_manager as db
+import string
 
 title = "Grocery Running 🏃‍♂️"
 st.set_page_config(
@@ -23,6 +24,15 @@ grocery_list = pd.DataFrame(
     }
 )
 
+if "generate_clicked" not in st.session_state:
+    st.session_state.generate_clicked = False
+
+def generate_options():
+    st.session_state.generate_clicked = True
+
+def degenerate_options():
+    st.session_state.generate_clicked = False
+
 st.sidebar.title("Shopping List 🛒")
 
 edited_grocery_list = st.sidebar.data_editor(
@@ -36,5 +46,23 @@ edited_grocery_list = st.sidebar.data_editor(
         )
     },
     num_rows = "dynamic",
-    hide_index = True
+    hide_index = True,
+    on_change = degenerate_options
 )
+
+st.button(
+    label = "Generate Options", 
+    type = "primary", 
+    help = "Finished selecting stores? Generate options!",
+    on_click = generate_options
+)
+
+if st.session_state.generate_clicked:
+    for grocery in edited_grocery_list["groceries"]:
+        grocery = grocery.strip()
+        if grocery and selected_locs:
+            st.header(string.capwords(grocery))
+            grocery_options = db.get_grocery_options(grocery, selected_locs)
+            grocery_options
+
+
