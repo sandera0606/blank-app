@@ -43,8 +43,15 @@ def parse_data(store, product):
     )
 
     if store == "Walmart":
-        #fill this out later
-        return
+        products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
+        for product in products:
+            if count >= number_products:
+                break
+            name = product.find_element(By.CSS_SELECTOR, 'head-title').text
+            price = product.find_element(By.CSS_SELECTOR, 'product-price').text
+            related_items[name] = price
+            count += 1
+        print(related_items)
         
     elif store == "Metro":
         products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
@@ -56,9 +63,37 @@ def parse_data(store, product):
             related_items[name] = price
             count += 1
         print(related_items)
-    #elif store == "Loblaws":
-    # elif store == "No Frills":
-    # elif store == "T&T Supermarket":
+    elif store == "Loblaws":
+        products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
+        for product in products:
+            if count >= number_products:
+                break
+            name = product.find_element(By.CSS_SELECTOR, 'head__title').text
+            price = product.find_element(By.CSS_SELECTOR, 'pricing__sale-price').text
+            related_items[name] = price
+            count += 1
+        print(related_items)
+
+    elif store == "No Frills":
+        products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
+        for product in products:
+            if count >= number_products:
+                break
+            name = product.find_element(By.CSS_SELECTOR, 'chakra-heading css-').text
+            price = product.find_element(By.CSS_SELECTOR, 'price-product-tile').text
+            related_items[name] = price
+            count += 1
+        print(related_items)
+    elif store == "T&T Supermarket":
+        products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
+        for product in products:
+            if count >= number_products:
+                break
+            name = product.find_element(By.CSS_SELECTOR, 'item-name--yq').text
+            price = product.find_element(By.CSS_SELECTOR, 'item-priceBox-OeM').text
+            related_items[name] = price
+            count += 1
+        print(related_items)
     # else:
     #     raise TypeError("Invalid store")
     driver.quit()
