@@ -7,7 +7,7 @@ from datetime import datetime
     #connect_timeout=None, read_timeout=None, retry_timeout=60, requests_kwargs=None, 
     #queries_per_second=60, queries_per_minute=6000, channel=None, retry_over_query_limit=True, 
     #experience_id=None, requests_session=None, base_url='https://maps.googleapis.com')
-
+x
 #optimized for ambigious text 
 find_place = find_place(input, input_type, fields=None, location_bias=None, language=None)
 
