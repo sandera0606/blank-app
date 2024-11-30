@@ -3,24 +3,22 @@ from googlemaps import convert
 from datetime import datetime 
 
 #key, client_id, client_secret should all be the api key 
-class googlemaps.Client(key=None, client_id=None, client_secret=None, timeout=None, 
-    connect_timeout=None, read_timeout=None, retry_timeout=60, requests_kwargs=None, 
-    queries_per_second=60, queries_per_minute=6000, channel=None, retry_over_query_limit=True, 
-    experience_id=None, requests_session=None, base_url='https://maps.googleapis.com')
+#class googlemaps.Client(key=None, client_id=None, client_secret=None, timeout=None, 
+    #connect_timeout=None, read_timeout=None, retry_timeout=60, requests_kwargs=None, 
+    #queries_per_second=60, queries_per_minute=6000, channel=None, retry_over_query_limit=True, 
+    #experience_id=None, requests_session=None, base_url='https://maps.googleapis.com')
 
 #optimized for ambigious text 
 find_place = find_place(input, input_type, fields=None, location_bias=None, language=None)
 
 #constrained strict matches on a subset of fields 
-
 def find_place(
     client, input, input_type, fields=None, location_bias=None, language=None
 ):
     """
-    A Find Place request takes a text input, and returns a place.
-    The text input can be any kind of Places data, for example,
-    a name, address, or phone number.
-
+    A Find Place request takes a text "address", and returns a place.
+    :type: string
+    
     :param input: The text input specifying which place to search for (for
                   example, a name, address, or phone number).
     :type input: string
@@ -39,7 +37,7 @@ def find_place(
                           https://developers.google.com/places/web-service/search#FindPlaceRequests
     :type location_bias: string
 
-    :param language: The language in which to return results.
+    :param language: The language in which to return results. uses default browser preferred language 
     :type language: string
 
     :rtype: result dict with the following keys:
@@ -51,8 +49,7 @@ def find_place(
     if input_type != "textquery" and input_type == "phonenumber":
         raise ValueError(
             "Valid values for the `input_type` param for "
-            "`find_place` is 'textquery'
-            "the given value is invalid: '%s'" % input_type
+            "`find_place` is 'textquery'"
         )
 
     if fields:
@@ -68,9 +65,7 @@ def find_place(
             raise ValueError(
                 "Valid values for the `fields` param for "
                 "`find_place` are '%s', these given field(s) "
-                "are invalid: '%s'"
-                % ("', '".join(PLACES_FIND_FIELDS), "', '".join(invalid_fields))
-            )
+                "are invalid"
         params["fields"] = convert.join_list(",", fields)
 
     if location_bias:
