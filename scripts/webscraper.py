@@ -9,9 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from scripts import bypass_bot_test
-import chromedriver_autoinstaller
-
-chromedriver_autoinstaller.install()
 # import bypass_bot_test
 
 stores = ["Zehrs", "Real Canadian Superstore", "Loblaws", "No Frills"]
