@@ -14,8 +14,9 @@ loading_fun = [
     "Cooking up "
 ]
 st.logo(
-    image = "assets/logo.png",
-    size = "medium"
+    image = "assets/large_logo.png",
+    size = "large",
+    icon_image = "assets/small_logo.png"
 )
 
 title = "Grocery Running 🏃‍♂️"
