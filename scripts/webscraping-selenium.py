@@ -24,6 +24,8 @@ selector_dict = {
     "T&T Supermarket": ".item-root-ADb"
 }
 
+# test
+
 
 def parse_data(store, product):
     # set up selenium stuff
