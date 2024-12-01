@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from scripts import bypass_bot_test
-#import bypass_bot_test
+# import bypass_bot_test
 
 stores = ["Zehrs", "Real Canadian Superstore", "Loblaws", "No Frills"]
 
@@ -18,7 +18,8 @@ def get_url(store, product):
         "Zehrs": f"https://www.zehrs.ca/search?search-bar={product}&sort=price-desc&page=1",
         "Real Canadian Superstore": f"https://www.realcanadiansuperstore.ca/search?search-bar={product}&sort=newest-desc&page=1",
         "Loblaws": f"https://www.loblaws.ca/search?search-bar={product}&sort=recommended&page=1&promotions=Price%2520Reduction",
-        "No Frills": f"https://www.nofrills.ca/search?search-bar={product}"
+        "No Frills": f"https://www.nofrills.ca/search?search-bar={product}",
+        "Fortinos": f"https://www.fortinos.ca/search?search-bar={product}&page=1&dietaryCallouts=organic"
     }
     return url_dict[store]
 
@@ -26,7 +27,8 @@ selector_dict = {
     "Zehrs": "chakra-linkbox",
     "Real Canadian Superstore": "chakra-linkbox",
     "Loblaws": "chakra-linkbox__overlay",
-    "No Frills":"chakra-linkbox"
+    "No Frills":"chakra-linkbox",
+    "Fortinos": "chakra-linkbox__overlay",
 }
 
 ############################ Beginning of CHATGPT Code ############################
@@ -80,7 +82,7 @@ def parse_data(store, product):
 ############################ End of CHATGPT Code ############################
 
     related_items = {}
-    number_products = 3
+    number_products = random.randrange(1,4)
     count = 0
 
     if store == "Zehrs":
@@ -123,6 +125,16 @@ def parse_data(store, product):
             price = product.find_element(By.CSS_SELECTOR, '.chakra-text.css-1yftjin').text
             related_items[name] = price
             count += 1
+    
+    elif store == "Fortinos":
+        products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
+        for product in products:
+            if count >= number_products:
+                break
+            name = product.find_element(By.CLASS_NAME, 'chakra-heading').text
+            price = product.find_element(By.CSS_SELECTOR, '.chakra-text.css-1yftjin').text
+            related_items[name] = price
+            count += 1
 
     else:
         raise TypeError("Invalid store")
@@ -135,4 +147,4 @@ def get_groceries_by_store(product, selected_locs):
         grocery_data[store] = parse_data(store, product)
     return grocery_data
 
-# print(parse_data("Loblaws", "bacon"))
+# print(parse_data("Fortinos", "bacon"))
