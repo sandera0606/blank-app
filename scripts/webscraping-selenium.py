@@ -35,7 +35,8 @@ def parse_data(store, product):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    service = webdriver.ChromeService(executable_path="scripts/chromedriver")
+    driver = webdriver.Chrome(service=service, options=options)
     driver.get(get_url(store, product))
     WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector_dict[store])) 
