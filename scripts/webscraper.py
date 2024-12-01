@@ -31,10 +31,7 @@ selector_dict = {
     "Fortinos": "chakra-linkbox__overlay",
 }
 
-############################ Beginning of CHATGPT Code ############################
-
-# def random_delay():
-#     time.sleep(random.uniform(8, 20))
+############################ Beginning of CHATGPT use ############################
 
 def manage_cookies(driver, cookie_file):
     try:
@@ -54,8 +51,6 @@ def manage_cookies(driver, cookie_file):
 
 def parse_data(store, product):
     # set up selenium stuff
-    # Example:
-    # {"Whole Wheat Bread": [price], "Whole Grain Bread: [price]"}
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -63,7 +58,6 @@ def parse_data(store, product):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument('referer=https://www.google.com')
-    # options.add_argument('--proxy-server=' + random.choice(proxies))
     options.add_argument(f'user-agent={random.choice(bypass_bot_test.user_agents)}')
 
     service = ChromeService(executable_path="chromedriver.exe")
@@ -79,14 +73,13 @@ def parse_data(store, product):
         EC.visibility_of_element_located((By.CLASS_NAME, selector_dict[store]))
     )
 
-############################ End of CHATGPT Code ############################
+############################ End of CHATGPT Use ############################
 
     related_items = {}
-    number_products = random.randrange(1,4)
+    number_products = random.randrange(1,4) #retrieves the three top items from each grocery store page
     count = 0
 
     if store == "Zehrs":
-        # random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -97,7 +90,6 @@ def parse_data(store, product):
             count += 1
         
     elif store == "Real Canadian Superstore":
-        # random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -106,6 +98,7 @@ def parse_data(store, product):
             price = product.find_element(By.CSS_SELECTOR, '.chakra-text.css-1yftjin').text
             related_items[name] = price
             count += 1
+    
     elif store == "Loblaws":
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
@@ -138,13 +131,12 @@ def parse_data(store, product):
 
     else:
         raise TypeError("Invalid store")
+    
     driver.quit()
     return related_items
         
-def get_groceries_by_store(product, selected_locs):
+def get_groceries_by_store(product, selected_locs): #retrieves top three products per page, given the product name and selected grocery stores
     grocery_data = {}
     for store in selected_locs:
         grocery_data[store] = parse_data(store, product)
     return grocery_data
-
-# print(parse_data("Fortinos", "bacon"))
