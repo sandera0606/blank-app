@@ -26,7 +26,7 @@ tab1, tab2 = st.tabs(["Enter Info", "Final List"])
 
 tab1.write("Enter your shopping list in the sidebar to get started!")
 
-tab1.text_input("Your Location:", key = "location")
+# tab1.text_input("Your Location:", key = "location")
 
 
 selected_locs = tab1.multiselect(
