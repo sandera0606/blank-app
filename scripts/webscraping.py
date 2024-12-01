@@ -37,7 +37,7 @@ def parse_data(store, product):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    service = webdriver.ChromeService(executable_path="scripts/chromedriver")
+    service = webdriver.ChromeService(executable_path="chromedriver.exe")
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(get_url(store, product))
     WebDriverWait(driver, 10).until(
@@ -53,12 +53,12 @@ def parse_data(store, product):
         return
         
     elif store == "Metro":
-        products = driver.find_elements(By.CSS_SELECTOR, selector_dict[store])
+        products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
                 break
-            name = product.find_element(By.CSS_SELECTOR, 'head__title').text
-            price = product.find_element(By.CSS_SELECTOR, 'pricing__sale-price').text
+            name = product.find_element(By.CLASS_NAME, 'head__title').text
+            price = product.find_element(By.CLASS_NAME, 'price-update').text
             related_items[name] = price
             count += 1
         print(related_items)
