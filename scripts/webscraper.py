@@ -75,7 +75,7 @@ def parse_data(store, product):
 
     manage_cookies(driver, f"{store}_cookies.pkl")
 
-    WebDriverWait(driver, 3).until(
+    WebDriverWait(driver, 4).until(
         EC.visibility_of_element_located((By.CLASS_NAME, selector_dict[store]))
     )
 
