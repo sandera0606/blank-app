@@ -18,4 +18,5 @@ A simple Streamlit app template for you to modify!
    $ streamlit run streamlit_app.py
    ```
 
-Used ChatGPT in webscraping.py to implement a random delay to mimic human behaviour when accessing a website
+ChatGPT usage:
+Used ChatGPT in webscraping.py to implement a random delay to mimic human behaviour when accessing a website and to store cookies. 
