@@ -75,7 +75,7 @@ def display_options():
         grocery = grocery.strip()
         if grocery and selected_locs:
             tab1.header(string.capwords(grocery))
-            with st.spinner(random.choice(loading_fun + string.capwords(grocery))):
+            with st.spinner(random.choice(loading_fun) + string.capwords(grocery)):
                 grocery_options = fetch_and_cache_options(grocery, selected_locs)
                 edited_options = tab1.data_editor(
                     grocery_options,
