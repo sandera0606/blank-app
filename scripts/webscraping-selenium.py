@@ -1,10 +1,8 @@
-from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 stores = ["Walmart", "Metro", "Loblaws", "No Frills", "T&T Supermarket"]
 
@@ -28,19 +26,24 @@ selector_dict = {
 
 
 def parse_data(store, product):
-    related_items = {}
+    # set up selenium stuff
     # Example:
     # {"Whole Wheat Bread": [price], "Whole Grain Bread: [price]"}
-    number_products = 3
-    count = 0
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
-    options = Options()
-    options.headless = True
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
     driver.get(get_url(store, product))
     WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector_dict[store])) 
     )
+
+    related_items = {}
+    number_products = 3
+    count = 0
 
     if store == "Walmart":
         #fill this out later
