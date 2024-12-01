@@ -13,6 +13,10 @@ loading_fun = [
     "Scavenging for ",
     "Cooking up "
 ]
+st.logo(
+    image = "assets/logo.png",
+    size = "medium"
+)
 
 title = "Grocery Running 🏃‍♂️"
 
