@@ -4,7 +4,15 @@ from scripts import db_manager as db
 import string
 import random
 
-loading_fun = ["Hunting for ", "Fetching ", "Running after ", "Searching for ", "Browsing aisles for "]
+loading_fun = [
+    "Hunting for ",
+    "Fetching ",
+    "Running after ",
+    "Sprinting for ",
+    "Browsing aisles for ",
+    "Scavenging for ",
+    "Cooking up "
+]
 
 title = "Grocery Running 🏃‍♂️"
 
@@ -101,10 +109,7 @@ tab2.dataframe(
     final_list_items,
     column_config={
         'Item_Name': 'Item Name',
-        'Price': st.column_config.NumberColumn(
-            'Price ($)',
-            format = "%.2f",
-        ),
+        'Price': 'Price',
         'Store': 'Store',
     },
     hide_index = True,
