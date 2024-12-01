@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from scripts import db_manager as db
 import string
+import random
+
+loading_fun = ["Hunting for ", "Fetching ", "Running after ", "Searching for ", "Browsing aisles for "]
 
 title = "Grocery Running 🏃‍♂️"
 
@@ -48,26 +51,46 @@ edited_grocery_list = st.sidebar.data_editor(
 
 final_list_items = []
 
+##### Coded by CHATGPT #####
+
+def fetch_and_cache_options(grocery, selected_locs):
+    cache_key = f"grocery_options_{grocery}_{'_'.join(selected_locs)}"
+
+    if cache_key not in st.session_state:
+        # Fetch options from the database if not already cached
+        options = db.get_grocery_options(grocery, selected_locs)
+        st.session_state[cache_key] = options  # Save it in session state
+        print(f"Fetching options for {grocery} from the database...")
+    else:
+        print(f"Using cached options for {grocery}...")
+    
+    return st.session_state[cache_key]  # Return the cached options
+
+
+##### End of code by Chat GPT ####
+
 def display_options():
     id = 0
     for grocery in edited_grocery_list["groceries"]:
         grocery = grocery.strip()
         if grocery and selected_locs:
             tab1.header(string.capwords(grocery))
-            edited_options = tab1.data_editor(
-                db.get_grocery_options(grocery, selected_locs),
-                key = "candidate-groceries-" + str(id),
-                hide_index = True
-            )
-            for option in edited_options.itertuples():
-                if(option.Finalize):
-                    final_list_items.append(
-                        {
-                            'Item_Name': option.Item_Name,
-                            'Price': option.Price,
-                            'Store': option.Store
-                        }
-                    )
+            with st.spinner(random.choice(loading_fun + string.capwords(grocery))):
+                grocery_options = fetch_and_cache_options(grocery, selected_locs)
+                edited_options = tab1.data_editor(
+                    grocery_options,
+                    key = f"candidate-groceries-{id}",
+                    hide_index = True
+                )
+                for option in edited_options.itertuples():
+                    if(option.Finalize):
+                        final_list_items.append(
+                            {
+                                'Item_Name': option.Item_Name,
+                                'Price': option.Price,
+                                'Store': option.Store
+                            }
+                        )
         id += 1
 
 display_options()
@@ -87,3 +110,4 @@ tab2.dataframe(
     hide_index = True,
     width = 1000
 )
+

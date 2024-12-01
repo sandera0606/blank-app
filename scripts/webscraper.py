@@ -8,17 +8,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
-from bypass_bot_test import user_agents, proxies
+from scripts import bypass_bot_test
+#import bypass_bot_test
 
-stores = ["Zehrs", "Real Canadian Superstore", "Loblaws", "No Frills", "T&T Supermarket"]
+stores = ["Zehrs", "Real Canadian Superstore", "Loblaws", "No Frills"]
 
 def get_url(store, product):
     url_dict = {
         "Zehrs": f"https://www.zehrs.ca/search?search-bar={product}&sort=price-desc&page=1",
-        "Real Canadian Superstore": f"https://www.realcanadiansuperstore.ca/search?search-bar={product}",
-        "Loblaws": f"https://www.loblaws.ca/search?search-bar={product}",
-        "No Frills": f"https://www.nofrills.ca/search?search-bar={product}",
-        "T&T Supermarket": f"https://www.tntsupermarket.com/eng/search.html?query={product}"
+        "Real Canadian Superstore": f"https://www.realcanadiansuperstore.ca/search?search-bar={product}&sort=newest-desc&page=1",
+        "Loblaws": f"https://www.loblaws.ca/search?search-bar={product}&sort=recommended&page=1&promotions=Price%2520Reduction",
+        "No Frills": f"https://www.nofrills.ca/search?search-bar={product}"
     }
     return url_dict[store]
 
@@ -26,14 +26,13 @@ selector_dict = {
     "Zehrs": "chakra-linkbox",
     "Real Canadian Superstore": "chakra-linkbox",
     "Loblaws": "chakra-linkbox__overlay",
-    "No Frills":"chakra-linkbox",
-    "T&T Supermarket": "item-root-ADb"
+    "No Frills":"chakra-linkbox"
 }
 
 ############################ Beginning of CHATGPT Code ############################
 
-def random_delay():
-    time.sleep(random.uniform(8, 20))
+# def random_delay():
+#     time.sleep(random.uniform(8, 20))
 
 def manage_cookies(driver, cookie_file):
     try:
@@ -57,13 +56,13 @@ def parse_data(store, product):
     # {"Whole Wheat Bread": [price], "Whole Grain Bread: [price]"}
 
     options = webdriver.ChromeOptions()
-    options.headless = False
+    options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument('referer=https://www.google.com')
     # options.add_argument('--proxy-server=' + random.choice(proxies))
-    options.add_argument(f'user-agent={random.choice(user_agents)}')
+    options.add_argument(f'user-agent={random.choice(bypass_bot_test.user_agents)}')
 
     service = ChromeService(executable_path="chromedriver.exe")
     driver = webdriver.Chrome(service=service, options=options)
@@ -71,10 +70,10 @@ def parse_data(store, product):
     # Visit URL and manage cookies
     driver.set_window_size(1080, 800)
     driver.get(get_url(store, product))
-    random_delay()
+
     manage_cookies(driver, f"{store}_cookies.pkl")
 
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 3).until(
         EC.visibility_of_element_located((By.CLASS_NAME, selector_dict[store]))
     )
 
@@ -85,7 +84,7 @@ def parse_data(store, product):
     count = 0
 
     if store == "Zehrs":
-        random_delay()
+        # random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -96,7 +95,7 @@ def parse_data(store, product):
             count += 1
         
     elif store == "Real Canadian Superstore":
-        random_delay()
+        # random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -106,7 +105,6 @@ def parse_data(store, product):
             related_items[name] = price
             count += 1
     elif store == "Loblaws":
-        random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -117,7 +115,6 @@ def parse_data(store, product):
             count += 1
 
     elif store == "No Frills":
-        random_delay()
         products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
         for product in products:
             if count >= number_products:
@@ -127,16 +124,6 @@ def parse_data(store, product):
             related_items[name] = price
             count += 1
 
-    elif store == "T&T Supermarket":
-        random_delay()
-        products = driver.find_elements(By.CLASS_NAME, selector_dict[store])
-        for product in products:
-            if count >= number_products:
-                break
-            name = product.find_element(By.CLASS_NAME, 'item-name--yq').text
-            price = product.find_element(By.CLASS_NAME, 'item-price-zRu').text
-            related_items[name] = price
-            count += 1
     else:
         raise TypeError("Invalid store")
     driver.quit()
@@ -148,4 +135,4 @@ def get_groceries_by_store(product, selected_locs):
         grocery_data[store] = parse_data(store, product)
     return grocery_data
 
-print(parse_data("Zehrs", "bacon"))
+# print(parse_data("Loblaws", "bacon"))
